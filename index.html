@@ -38,16 +38,33 @@
         flex-wrap: wrap;
         align-items: center;
         justify-content: center;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         font-size: 14px;
+    }
+
+    /* Pots container as grid: 2 columns, 10 rows max */
+    #pots-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 10px;
+        width: 100%;
     }
 
     .pot {
         display: flex;
+        flex-direction: column; /* stack elements inside each pot vertically */
+        align-items: flex-start;
+        padding: 8px;
+        background-color: #E6DAFF;
+        border-radius: 8px;
+    }
+
+    .pot-row {
+        display: flex; /* row for dropdowns and earnings */
         align-items: center;
         justify-content: flex-start;
+        flex-wrap: wrap;
         width: 100%;
-        margin-bottom: 10px;
     }
 
     select, input[type="number"] {
@@ -57,7 +74,7 @@
         border: none;
         font-size: 0.9em;
         min-width: 80px;
-        background-color: #8A2BE2; /* purple background */
+        background-color: #8A2BE2; /* purple */
         color: black;
         font-weight: bold;
     }
@@ -86,18 +103,19 @@
     }
 
     .remove-btn {
-        margin-left: 10px;
+        margin-top: 5px; /* appear under the row */
         color: red;
         cursor: pointer;
         font-weight: bold;
         font-size: 1em;
+        align-self: flex-end; /* right align under pot */
     }
 
     .earnings {
         margin-top: 20px;
         font-weight: bold;
         text-align: center;
-        font-size: 22px; /* larger to stand out */
+        font-size: 22px; /* bigger to stand out */
     }
 
     footer#credits {
@@ -199,6 +217,9 @@ function createPot(fruit, type, mod) {
     const potDiv = document.createElement('div');
     potDiv.className = 'pot';
 
+    const potRow = document.createElement('div');
+    potRow.className = 'pot-row';
+
     const fruitDropdown = createDropdown(fruitOptions, fruit);
     const typeDropdown = createDropdown(potTypeOptions, type);
     const modifierDropdown = createDropdown(modifierOptions, mod);
@@ -206,6 +227,11 @@ function createPot(fruit, type, mod) {
     const potEarnings = document.createElement('span');
     potEarnings.className = 'pot-earnings';
     potEarnings.textContent = '0 coins/h';
+
+    potRow.appendChild(fruitDropdown);
+    potRow.appendChild(typeDropdown);
+    potRow.appendChild(modifierDropdown);
+    potRow.appendChild(potEarnings);
 
     const removeBtn = document.createElement('span');
     removeBtn.textContent = '✖';
@@ -215,10 +241,7 @@ function createPot(fruit, type, mod) {
         calculateEarnings();
     };
 
-    potDiv.appendChild(fruitDropdown);
-    potDiv.appendChild(typeDropdown);
-    potDiv.appendChild(modifierDropdown);
-    potDiv.appendChild(potEarnings);
+    potDiv.appendChild(potRow);
     potDiv.appendChild(removeBtn);
 
     return potDiv;
@@ -247,10 +270,11 @@ function calculateEarnings() {
     const pots = document.querySelectorAll('.pot');
 
     pots.forEach(potDiv => {
-        const fruit = potDiv.children[0].value;
-        const type = potDiv.children[1].value;
-        const modifier = potDiv.children[2].value;
-        const potEarningsDisplay = potDiv.children[3];
+        const potRow = potDiv.querySelector('.pot-row');
+        const fruit = potRow.children[0].value;
+        const type = potRow.children[1].value;
+        const modifier = potRow.children[2].value;
+        const potEarningsDisplay = potRow.children[3];
 
         const base = baseEarnings[fruit];
         const value = base * potTypeMultiplier[type] * modifierMultiplier[modifier];
