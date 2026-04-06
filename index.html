@@ -15,9 +15,9 @@
         justify-content: flex-start;
         align-items: center;
         margin: 0;
-        padding: 20px;
+        padding: 15px;
         font-weight: bold;
-        font-size: 20px;
+        font-size: 16px; /* smaller font */
     }
 
     #main-container {
@@ -38,41 +38,36 @@
         align-items: center;
         justify-content: center;
         margin-bottom: 10px;
+        font-size: 14px; /* smaller text */
     }
 
     .pot {
         display: flex;
-        flex-direction: column; /* stack row + remove button */
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .pot-row {
-        display: flex;
-        flex-wrap: nowrap;
         align-items: center;
         justify-content: center;
+        margin-bottom: 10px;
     }
 
     select, input[type="number"] {
-        margin: 5px;
-        padding: 8px;
-        border-radius: 8px;
+        margin: 3px;
+        padding: 5px;
+        border-radius: 6px;
         border: none;
-        font-size: 1em;
-        min-width: 100px;
+        font-size: 0.9em;
+        min-width: 80px;
     }
 
     button {
-        padding: 8px 15px;
-        border-radius: 12px;
+        padding: 5px 10px;
+        border-radius: 10px;
         border: none;
         background-color: #FFD700;
         color: black;
         font-weight: bold;
         cursor: pointer;
-        margin: 5px;
+        margin: 3px;
         transition: 0.2s;
+        font-size: 0.9em;
     }
 
     button:hover {
@@ -82,27 +77,29 @@
     .pot-earnings {
         margin-left: 10px;
         font-weight: bold;
+        font-size: 0.9em;
     }
 
     .remove-btn {
+        margin-left: 10px;
         color: red;
         cursor: pointer;
         font-weight: bold;
-        font-size: 1.2em;
-        margin-top: 5px; /* below the row */
+        font-size: 1em;
     }
 
     .earnings {
-        margin-top: 20px;
+        margin-top: 15px;
         font-weight: bold;
         text-align: center;
+        font-size: 16px;
     }
 
     footer#credits {
         margin-top: auto;
         padding: 10px;
         border-top: 1px solid #ccc;
-        font-size: 0.9em;
+        font-size: 0.8em;
         color: black;
         text-align: center;
         width: 100%;
@@ -197,10 +194,6 @@ function createPot(fruit, type, mod) {
     const potDiv = document.createElement('div');
     potDiv.className = 'pot';
 
-    // Row container
-    const rowDiv = document.createElement('div');
-    rowDiv.className = 'pot-row';
-
     const fruitDropdown = createDropdown(fruitOptions, fruit);
     const typeDropdown = createDropdown(potTypeOptions, type);
     const modifierDropdown = createDropdown(modifierOptions, mod);
@@ -208,11 +201,6 @@ function createPot(fruit, type, mod) {
     const potEarnings = document.createElement('span');
     potEarnings.className = 'pot-earnings';
     potEarnings.textContent = '0 /h';
-
-    rowDiv.appendChild(fruitDropdown);
-    rowDiv.appendChild(typeDropdown);
-    rowDiv.appendChild(modifierDropdown);
-    rowDiv.appendChild(potEarnings);
 
     const removeBtn = document.createElement('span');
     removeBtn.textContent = '✖';
@@ -222,7 +210,11 @@ function createPot(fruit, type, mod) {
         calculateEarnings();
     };
 
-    potDiv.appendChild(rowDiv);
+    // Append all inline
+    potDiv.appendChild(fruitDropdown);
+    potDiv.appendChild(typeDropdown);
+    potDiv.appendChild(modifierDropdown);
+    potDiv.appendChild(potEarnings);
     potDiv.appendChild(removeBtn);
 
     return potDiv;
@@ -251,11 +243,10 @@ function calculateEarnings() {
     const pots = document.querySelectorAll('.pot');
 
     pots.forEach(potDiv => {
-        const rowDiv = potDiv.querySelector('.pot-row');
-        const fruit = rowDiv.children[0].value;
-        const type = rowDiv.children[1].value;
-        const modifier = rowDiv.children[2].value;
-        const potEarningsDisplay = rowDiv.children[3];
+        const fruit = potDiv.children[0].value;
+        const type = potDiv.children[1].value;
+        const modifier = potDiv.children[2].value;
+        const potEarningsDisplay = potDiv.children[3];
 
         const base = baseEarnings[fruit];
         const value = base * potTypeMultiplier[type] * modifierMultiplier[modifier];
