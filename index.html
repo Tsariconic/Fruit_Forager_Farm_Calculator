@@ -5,54 +5,126 @@
     <title>Pots Earnings Calculator</title>
     <style>
         body {
+            background-color: #5C0FCF;
+            color: black;
             font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            justify-content: flex-start;
+            align-items: center;
+            margin: 0;
             padding: 20px;
+            font-weight: bold;
         }
-        .pot, .builder {
+
+        #main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 700px;
+        }
+
+        h2, h3 {
+            text-align: center;
+        }
+
+        .builder, .pot {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 10px;
         }
-        select, input {
-            margin-right: 10px;
+
+        select, input[type="number"] {
+            margin: 5px;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1em;
+            min-width: 100px;
         }
+
+        button {
+            padding: 8px 15px;
+            border-radius: 12px;
+            border: none;
+            background-color: #FFD700;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            background-color: #FFC107;
+        }
+
         .pot-earnings {
             margin-left: 10px;
             font-weight: bold;
         }
+
         .remove-btn {
             margin-left: 10px;
             color: red;
             cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2em;
         }
+
         .earnings {
             margin-top: 20px;
             font-weight: bold;
+            text-align: center;
         }
+
         footer#credits {
-             margin-top: 50px;
-            padding-top: 10px;
+            margin-top: auto;
+            padding: 10px;
             border-top: 1px solid #ccc;
             font-size: 0.9em;
-            color: #555;
+            color: black;
+            text-align: center;
+            width: 100%;
         }
     </style>
 </head>
 <body>
+<div id="main-container">
+    <h2>Pots Manager</h2>
 
-<h2>Pots Manager</h2>
+    <!-- BUILDER ROW -->
+    <div class="builder">
+        <strong>Add:</strong>
+        <select id="builder-fruit"></select>
+        <select id="builder-type"></select>
+        <select id="builder-mod"></select>
+        <input type="number" id="builder-count" min="1" max="20" value="1">
+        <button id="builder-add">Add</button>
+    </div>
 
-<!-- BUILDER ROW -->
-<div class="builder">
-    <strong>Add:</strong>
-    <select id="builder-fruit"></select>
-    <select id="builder-type"></select>
-    <select id="builder-mod"></select>
-    <input type="number" id="builder-count" min="1" max="20" value="1">
-    <button id="builder-add">Add</button>
+    <!-- Pots Container -->
+    <div id="pots-container"></div>
+
+    <!-- Earnings Display -->
+    <div class="earnings" id="earnings-display">No pots added.</div>
 </div>
 
-<div id="pots-container"></div>
-
-<div class="earnings" id="earnings-display"></div>
+<footer id="credits">
+    <h3>Credits</h3>
+    <p>
+        Me: For making the website.<br><br>
+        FizzyFurr: For calculating the per-hour earnings of all the fruit in the calculator.<br>
+        Check out his channel <a href="https://www.youtube.com/@fizzyfurr">here</a><br><br>
+        FaultyMarkus: For making Fruit Forager<br><br>
+        Usurp: For putting me in the special mentions of their video even though I did nothing.<br>
+        Check out their channel <a href="https://www.youtube.com/@TheActualBonkers">here</a>
+    </p>
+</footer>
 
 <script>
 const maxPots = 20;
@@ -95,7 +167,6 @@ const builderMod = document.getElementById('builder-mod');
 const builderCount = document.getElementById('builder-count');
 const builderAdd = document.getElementById('builder-add');
 
-// Populate builder dropdowns
 function fillDropdown(select, options, defaultVal) {
     options.forEach(opt => {
         const o = document.createElement('option');
@@ -112,7 +183,6 @@ fillDropdown(builderMod, modifierOptions, 'None');
 
 function createDropdown(options, defaultValue) {
     const select = document.createElement('select');
-
     options.forEach(option => {
         const opt = document.createElement('option');
         opt.value = option;
@@ -120,9 +190,7 @@ function createDropdown(options, defaultValue) {
         if(option === defaultValue) opt.selected = true;
         select.appendChild(opt);
     });
-
     select.addEventListener('change', calculateEarnings);
-
     return select;
 }
 
@@ -138,7 +206,6 @@ function createPot(fruit, type, mod) {
     potEarnings.className = 'pot-earnings';
     potEarnings.textContent = '0 /h';
 
-    // ❌ remove button
     const removeBtn = document.createElement('span');
     removeBtn.textContent = '✖';
     removeBtn.className = 'remove-btn';
@@ -200,26 +267,12 @@ function calculateEarnings() {
     });
 
     if (pots.length === 0) {
-         earningsDisplay.textContent = "No pots added.";
+        earningsDisplay.textContent = "No pots added.";
     } else {
         earningsDisplay.textContent = `Total Coins/hour: ${totalCoins.toFixed(2)}, Total Tickets/hour: ${totalTickets.toFixed(2)}`;
-}
+    }
 }
 
 calculateEarnings();
 </script>
-<br><br><br>
-<h3>NOTE: The value for the ticket tree is NOT accurate, it is a placeholder</h2>
-<footer id="credits">
-    <h3>Credits</h3>
-    <p>
-        Me: For making the website.<br><br>
-        FizzyFurr: For calculating the per-hour earnings of all the fruit in the calculator.<br>
-        Check out his channel <a href="https://www.youtube.com/@fizzyfurr">here</a><br><br>
-        FaultyMarkus: For making Fruit Forager<br><br>
-        Usurp: For putting me in the special mentions of their video even though I did nothing.<br>
-        Check out their channel <a href="https://www.youtube.com/@TheActualBonkers">here</a>
-    </p>
-</footer>
-</body>
 </html>
