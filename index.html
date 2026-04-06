@@ -43,7 +43,7 @@ const addPotBtn = document.getElementById('add-pot-btn');
 const calculateBtn = document.getElementById('calculate-btn');
 const earningsDisplay = document.getElementById('earnings-display');
 
-const fruitOptions = ['None', 'Apple', 'Banana', 'Pear', 'Ticket'];
+const fruitOptions = ['None', 'Dragonfruit', 'Orange', 'Fig', 'Tarap', 'Worsboom', 'Cacao', 'Snowbloom', 'Pomegranate', 'Papaya', 'Ticket'];
 const potTypeOptions = ['Regular (1x)', 'Silver (1.5x)', 'Tourmaline (2x)'];
 const modifierOptions = ['None', 'Juicy Gate (1.5x)'];
 
@@ -51,10 +51,16 @@ let potCount = 0;
 
 // Base earnings per fruit per hour
 const baseEarnings = {
-    'Apple': 2,
-    'Banana': 10,
-    'Pear': 50,
-    'Ticket': 20,
+    'Dragonfruit': 912,
+    'Orange': 952,
+    'Fig': 1176,
+    'Tarap': 1264,
+    'Worsboom': 1272,
+    'Cacao': 2088,
+    'Snowbloom': 2320,
+    'Pomegranate': 2328,
+    'Papaya': 2712,
+    'Ticket': 9999,
     'None': 0
 };
 
