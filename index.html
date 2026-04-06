@@ -8,14 +8,20 @@
             font-family: Arial, sans-serif;
             padding: 20px;
         }
-        .pot {
+        .pot, .builder {
             margin-bottom: 10px;
         }
-        select {
+        select, input {
             margin-right: 10px;
         }
-        button {
-            margin-top: 15px;
+        .pot-earnings {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        .remove-btn {
+            margin-left: 10px;
+            color: red;
+            cursor: pointer;
         }
         .earnings {
             margin-top: 20px;
@@ -27,29 +33,29 @@
 
 <h2>Pots Manager</h2>
 
-<div id="pots-container">
-    <!-- Pots will appear here -->
+<!-- BUILDER ROW -->
+<div class="builder">
+    <strong>Quick Add:</strong>
+    <select id="builder-fruit"></select>
+    <select id="builder-type"></select>
+    <select id="builder-mod"></select>
+    <input type="number" id="builder-count" min="1" max="20" value="1">
+    <button id="builder-add">Add</button>
 </div>
 
-<button id="add-pot-btn">Add Pot</button>
-<button id="calculate-btn">Calculate Earnings</button>
+<div id="pots-container"></div>
 
 <div class="earnings" id="earnings-display"></div>
 
 <script>
 const maxPots = 20;
 const potsContainer = document.getElementById('pots-container');
-const addPotBtn = document.getElementById('add-pot-btn');
-const calculateBtn = document.getElementById('calculate-btn');
 const earningsDisplay = document.getElementById('earnings-display');
 
 const fruitOptions = ['None', 'Dragonfruit', 'Orange', 'Fig', 'Tarap', 'Worsboom', 'Cacao', 'Snowbloom', 'Pomegranate', 'Papaya', 'Ticket'];
 const potTypeOptions = ['Regular (1x)', 'Silver (1.5x)', 'Tourmaline (2x)'];
 const modifierOptions = ['None', 'Juicy Gate (1.5x)'];
 
-let potCount = 0;
-
-// Base earnings per fruit per hour
 const baseEarnings = {
     'Dragonfruit': 912,
     'Orange': 952,
@@ -64,7 +70,6 @@ const baseEarnings = {
     'None': 0
 };
 
-// Multipliers
 const potTypeMultiplier = {
     'Regular (1x)': 1,
     'Silver (1.5x)': 1.5,
@@ -76,9 +81,31 @@ const modifierMultiplier = {
     'Juicy Gate (1.5x)': 1.5
 };
 
-// Create a dropdown <select>
+// Builder elements
+const builderFruit = document.getElementById('builder-fruit');
+const builderType = document.getElementById('builder-type');
+const builderMod = document.getElementById('builder-mod');
+const builderCount = document.getElementById('builder-count');
+const builderAdd = document.getElementById('builder-add');
+
+// Populate builder dropdowns
+function fillDropdown(select, options, defaultVal) {
+    options.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt;
+        o.textContent = opt;
+        if(opt === defaultVal) o.selected = true;
+        select.appendChild(o);
+    });
+}
+
+fillDropdown(builderFruit, fruitOptions, 'None');
+fillDropdown(builderType, potTypeOptions, 'Regular (1x)');
+fillDropdown(builderMod, modifierOptions, 'None');
+
 function createDropdown(options, defaultValue) {
     const select = document.createElement('select');
+
     options.forEach(option => {
         const opt = document.createElement('option');
         opt.value = option;
@@ -86,65 +113,104 @@ function createDropdown(options, defaultValue) {
         if(option === defaultValue) opt.selected = true;
         select.appendChild(opt);
     });
+
+    select.addEventListener('change', calculateEarnings);
+
     return select;
 }
 
-// Add a new pot row
-function addPot() {
-    if(potCount >= maxPots) {
-        alert("Maximum of 20 pots reached.");
-        return;
-    }
-
+function createPot(fruit, type, mod) {
     const potDiv = document.createElement('div');
     potDiv.className = 'pot';
-    potDiv.id = `pot-${potCount}`;
 
-    const fruitDropdown = createDropdown(fruitOptions, 'None');
-    const typeDropdown = createDropdown(potTypeOptions, 'Regular (1x)');
-    const modifierDropdown = createDropdown(modifierOptions, 'None');
+    const fruitDropdown = createDropdown(fruitOptions, fruit);
+    const typeDropdown = createDropdown(potTypeOptions, type);
+    const modifierDropdown = createDropdown(modifierOptions, mod);
+
+    const potEarnings = document.createElement('span');
+    potEarnings.className = 'pot-earnings';
+    potEarnings.textContent = '0 /h';
+
+    // ❌ remove button
+    const removeBtn = document.createElement('span');
+    removeBtn.textContent = '✖';
+    removeBtn.className = 'remove-btn';
+    removeBtn.onclick = () => {
+        potsContainer.removeChild(potDiv);
+        calculateEarnings();
+    };
 
     potDiv.appendChild(fruitDropdown);
     potDiv.appendChild(typeDropdown);
     potDiv.appendChild(modifierDropdown);
+    potDiv.appendChild(potEarnings);
+    potDiv.appendChild(removeBtn);
 
-    potsContainer.appendChild(potDiv);
-    potCount++;
+    return potDiv;
 }
 
-// Calculate total earnings
+// Add multiple pots
+builderAdd.onclick = () => {
+    let count = parseInt(builderCount.value);
+    if(isNaN(count) || count < 1) count = 1;
+
+    const current = document.querySelectorAll('.pot').length;
+    const spaceLeft = maxPots - current;
+
+    count = Math.min(count, spaceLeft);
+
+    for(let i = 0; i < count; i++) {
+        potsContainer.appendChild(
+            createPot(builderFruit.value, builderType.value, builderMod.value)
+        );
+    }
+
+    calculateEarnings();
+};
+
 function calculateEarnings() {
     let totalCoins = 0;
     let totalTickets = 0;
 
-    for(let i=0; i<potCount; i++) {
-        const potDiv = document.getElementById(`pot-${i}`);
+    const pots = document.querySelectorAll('.pot');
+
+    pots.forEach(potDiv => {
         const fruit = potDiv.children[0].value;
         const type = potDiv.children[1].value;
         const modifier = potDiv.children[2].value;
+        const potEarningsDisplay = potDiv.children[3];
 
         const base = baseEarnings[fruit];
-        const coins = base * potTypeMultiplier[type] * modifierMultiplier[modifier];
+        const value = base * potTypeMultiplier[type] * modifierMultiplier[modifier];
 
-        if(fruit === 'Ticket') {
-            totalTickets += coins;
+        if (fruit === 'Ticket') {
+            totalTickets += value;
+            potEarningsDisplay.textContent = `${value.toFixed(2)} tickets/h`;
         } else {
-            totalCoins += coins;
+            totalCoins += value;
+            potEarningsDisplay.textContent = `${value.toFixed(2)} coins/h`;
         }
-    }
+    });
 
-    earningsDisplay.textContent = `Total Coins/hour: ${totalCoins}, Total Tickets/hour: ${totalTickets}`;
+    earningsDisplay.textContent =
+        `Total Coins/hour: ${totalCoins.toFixed(2)}, Total Tickets/hour: ${totalTickets.toFixed(2)}`;
 }
 
-// Initialize first pot
-addPot();
-
-// Event listeners
-addPotBtn.addEventListener('click', addPot);
-calculateBtn.addEventListener('click', calculateEarnings);
+// Start with 1 pot
+potsContainer.appendChild(createPot('None', 'Regular (1x)', 'None'));
+calculateEarnings();
 </script>
+
 <h2>NOTE: The value for the ticket tree is NOT accurate, it is a placeholder</h2>
+
 <h3>Credits</h3>
-<p>Me: For making the website.<br><br>FizzyFurr: For calculating the per-hour earnings of all the fruit in the calculator.<br>Check out his channel <a href="https://www.youtube.com/@fizzyfurr">here</a><br><br>FaultyMarkus: For making Fruit Forager<br><br>Usurp: For putting me in the special mentions of his video even though I did nothing.<br>Check out their channel <a href="https://www.youtube.com/@TheActualBonkers">here</a></p>
+<p>
+Me: For making the website.<br><br>
+FizzyFurr: For calculating the per-hour earnings of all the fruit in the calculator.<br>
+Check out his channel <a href="https://www.youtube.com/@fizzyfurr">here</a><br><br>
+FaultyMarkus: For making Fruit Forager<br><br>
+Usurp: For putting me in the special mentions of his video even though I did nothing.<br>
+Check out their channel <a href="https://www.youtube.com/@TheActualBonkers">here</a>
+</p>
 </body>
 </html>
