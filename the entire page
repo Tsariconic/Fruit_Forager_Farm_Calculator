@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pots Earnings Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .pot {
+            margin-bottom: 10px;
+        }
+        select {
+            margin-right: 10px;
+        }
+        button {
+            margin-top: 15px;
+        }
+        .earnings {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Pots Manager</h2>
+
+<div id="pots-container">
+    <!-- Pots will appear here -->
+</div>
+
+<button id="add-pot-btn">Add Pot</button>
+<button id="calculate-btn">Calculate Earnings</button>
+
+<div class="earnings" id="earnings-display"></div>
+
+<script>
+const maxPots = 20;
+const potsContainer = document.getElementById('pots-container');
+const addPotBtn = document.getElementById('add-pot-btn');
+const calculateBtn = document.getElementById('calculate-btn');
+const earningsDisplay = document.getElementById('earnings-display');
+
+const fruitOptions = ['None', 'Apple', 'Banana', 'Pear', 'Ticket'];
+const potTypeOptions = ['Regular (1x)', 'Silver (1.5x)', 'Tourmaline (2x)'];
+const modifierOptions = ['None', 'Juicy Gate (1.5x)'];
+
+let potCount = 0;
+
+// Base earnings per fruit per hour
+const baseEarnings = {
+    'Apple': 2,
+    'Banana': 10,
+    'Pear': 50,
+    'Ticket': 20,
+    'None': 0
+};
+
+// Multipliers
+const potTypeMultiplier = {
+    'Regular (1x)': 1,
+    'Silver (1.5x)': 1.5,
+    'Tourmaline (2x)': 2
+};
+
+const modifierMultiplier = {
+    'None': 1,
+    'Juicy Gate (1.5x)': 1.5
+};
+
+// Create a dropdown <select>
+function createDropdown(options, defaultValue) {
+    const select = document.createElement('select');
+    options.forEach(option => {
+        const opt = document.createElement('option');
+        opt.value = option;
+        opt.textContent = option;
+        if(option === defaultValue) opt.selected = true;
+        select.appendChild(opt);
+    });
+    return select;
+}
+
+// Add a new pot row
+function addPot() {
+    if(potCount >= maxPots) {
+        alert("Maximum of 20 pots reached.");
+        return;
+    }
+
+    const potDiv = document.createElement('div');
+    potDiv.className = 'pot';
+    potDiv.id = `pot-${potCount}`;
+
+    const fruitDropdown = createDropdown(fruitOptions, 'None');
+    const typeDropdown = createDropdown(potTypeOptions, 'Regular (1x)');
+    const modifierDropdown = createDropdown(modifierOptions, 'None');
+
+    potDiv.appendChild(fruitDropdown);
+    potDiv.appendChild(typeDropdown);
+    potDiv.appendChild(modifierDropdown);
+
+    potsContainer.appendChild(potDiv);
+    potCount++;
+}
+
+// Calculate total earnings
+function calculateEarnings() {
+    let totalCoins = 0;
+    let totalTickets = 0;
+
+    for(let i=0; i<potCount; i++) {
+        const potDiv = document.getElementById(`pot-${i}`);
+        const fruit = potDiv.children[0].value;
+        const type = potDiv.children[1].value;
+        const modifier = potDiv.children[2].value;
+
+        const base = baseEarnings[fruit];
+        const coins = base * potTypeMultiplier[type] * modifierMultiplier[modifier];
+
+        if(fruit === 'Ticket') {
+            totalTickets += coins;
+        } else {
+            totalCoins += coins;
+        }
+    }
+
+    earningsDisplay.textContent = `Total Coins/hour: ${totalCoins}, Total Tickets/hour: ${totalTickets}`;
+}
+
+// Initialize first pot
+addPot();
+
+// Event listeners
+addPotBtn.addEventListener('click', addPot);
+calculateBtn.addEventListener('click', calculateEarnings);
+</script>
+
+</body>
+</html>
