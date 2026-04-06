@@ -27,6 +27,13 @@
             margin-top: 20px;
             font-weight: bold;
         }
+        footer#credits {
+             margin-top: 50px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+            font-size: 0.9em;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -196,21 +203,21 @@ function calculateEarnings() {
         `Total Coins/hour: ${totalCoins.toFixed(2)}, Total Tickets/hour: ${totalTickets.toFixed(2)}`;
 }
 
-// Start with 1 pot
-potsContainer.appendChild(createPot('None', 'Regular (1x)', 'None'));
 calculateEarnings();
 </script>
 
 <h2>NOTE: The value for the ticket tree is NOT accurate, it is a placeholder</h2>
-<br><br><br><br>
-<h4>Credits</h4>
-<p>
-Me: For making the website.<br><br>
-FizzyFurr: For calculating the per-hour earnings of all the fruit in the calculator.<br>
-Check out his channel <a href="https://www.youtube.com/@fizzyfurr">here</a><br><br>
-FaultyMarkus: For making Fruit Forager<br><br>
-Usurp: For putting me in the special mentions of his video even though I did nothing.<br>
-Check out their channel <a href="https://www.youtube.com/@TheActualBonkers">here</a>
-</p>
+<footer id="credits">
+    <hr>
+    <h3>Credits</h3>
+    <p>
+        Me: For making the website.<br><br>
+        FizzyFurr: For calculating the per-hour earnings of all the fruit in the calculator.<br>
+        Check out his channel <a href="https://www.youtube.com/@fizzyfurr">here</a><br><br>
+        FaultyMarkus: For making Fruit Forager<br><br>
+        Usurp: For putting me in the special mentions of his video even though I did nothing.<br>
+        Check out their channel <a href="https://www.youtube.com/@TheActualBonkers">here</a>
+    </p>
+</footer>
 </body>
 </html>
