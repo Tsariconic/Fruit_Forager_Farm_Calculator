@@ -6,136 +6,137 @@
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet">
 <style>
     body {
-        background-color: #5C0FCF;
-        color: black;
-        font-family: 'Source Sans Pro', Arial, sans-serif;
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        justify-content: flex-start;
-        align-items: center;
-        margin: 0;
-        padding: 15px;
-        font-weight: bold;
-        font-size: 16px;
-    }
+    background-color: #5C0FCF;
+    color: black;
+    font-family: 'Source Sans Pro', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0;
+    padding: 15px;
+    font-weight: bold;
+    font-size: 16px;
+}
 
-    #main-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 90%;
-        max-width: 700px;
-    }
+#main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 700px;
+}
 
-    h1, h2, h3 {
-        text-align: center;
-    }
+h1, h2, h3 {
+    text-align: center;
+}
 
-    .builder {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 15px;
-        font-size: 14px;
-    }
+.builder {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
 
-    /* Pots container flex: two per row on desktop, stack on mobile */
-    #pots-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        width: 100%;
-    }
+#pots-container {
+    display: flex;
+    flex-wrap: wrap; /* container wraps pots */
+    gap: 10px;
+    width: 100%;
+    justify-content: flex-start;
+}
 
+.pot {
+    display: flex;
+    flex-direction: row; /* everything in one line */
+    flex-wrap: nowrap; /* prevent inner wrapping */
+    align-items: center;
+    justify-content: flex-start;
+    width: calc(50% - 10px); /* two pots per row on desktop */
+    box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
     .pot {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        width: calc(50% - 10px); /* 2 pots per row with gap */
-        flex-wrap: wrap; /* wrap items inside if needed */
+        width: 100%; /* stack to one column on mobile */
     }
+}
 
-    /* Stack to one per row on smaller screens */
-    @media (max-width: 600px) {
-        .pot {
-            width: 100%;
-        }
-    }
+select, input[type="number"] {
+    margin: 3px;
+    padding: 5px;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.9em;
+    min-width: 80px;
+    background-color: #8A2BE2; /* purple */
+    color: black;
+    font-weight: bold;
+}
 
-    select, input[type="number"] {
-        margin: 3px;
-        padding: 5px;
-        border-radius: 6px;
-        border: none;
-        font-size: 0.9em;
-        min-width: 80px;
-        background-color: #8A2BE2; /* purple */
-        color: black;
-        font-weight: bold;
-    }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    background-color: #8A2BE2; /* purple background */
+    color: black;
+    border-radius: 4px;
+    height: auto;
+    width: 16px;
+}
 
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-        background-color: #8A2BE2; /* purple background */
-        color: black;
-        border-radius: 4px;
-        height: auto;
-        width: 16px;
-    }
+input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}
 
-    input[type="number"] {
-        -moz-appearance: textfield; /* Firefox */
-    }
+button {
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: none;
+    background-color: #FFD700;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 3px;
+    transition: 0.2s;
+    font-size: 0.9em;
+}
 
-    button {
-        padding: 5px 10px;
-        border-radius: 10px;
-        border: none;
-        background-color: #FFD700;
-        color: black;
-        font-weight: bold;
-        cursor: pointer;
-        margin: 3px;
-        transition: 0.2s;
-        font-size: 0.9em;
-    }
+button:hover {
+    background-color: #FFC107;
+}
 
-    button:hover {
-        background-color: #FFC107;
-    }
+.pot-earnings {
+    margin-left: 10px;
+    font-weight: bold;
+    font-size: 1em;
+}
 
-    .pot-earnings {
-        margin-left: 10px;
-        font-weight: bold;
-        font-size: 1em;
-    }
+.remove-btn {
+    margin-left: 10px;
+    color: red;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1em;
+}
 
-    .remove-btn {
-        margin-left: 10px;
-        color: red;
-        cursor: pointer;
-        font-weight: bold;
-        font-size: 1em;
-    }
+.earnings {
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 22px; /* bigger for total earnings */
+}
 
-    .earnings {
-        margin-top: 20px;
-        font-weight: bold;
-        text-align: center;
-        font-size: 22px; /* bigger for total earnings */
-    }
-
-    footer#credits {
-        margin-top: auto;
-        padding: 10px;
-        border-top: 1px solid #ccc;
-        font-size: 0.8em;
-        color: black;
-        text-align: center;
-        width: 100%;
-    }
+footer#credits {
+    margin-top: auto;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    font-size: 0.8em;
+    color: black;
+    text-align: center;
+    width: 100%;
+}
 </style>
 </head>
 <body>
