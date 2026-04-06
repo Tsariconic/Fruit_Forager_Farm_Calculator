@@ -199,8 +199,11 @@ function calculateEarnings() {
         }
     });
 
-    earningsDisplay.textContent =
-        `Total Coins/hour: ${totalCoins.toFixed(2)}, Total Tickets/hour: ${totalTickets.toFixed(2)}`;
+    if (pots.length === 0) {
+         earningsDisplay.textContent = "No pots added.";
+    } else {
+        earningsDisplay.textContent = `Total Coins/hour: ${totalCoins.toFixed(2)}, Total Tickets/hour: ${totalTickets.toFixed(2)}`;
+}
 }
 
 calculateEarnings();
